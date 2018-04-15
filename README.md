@@ -1,2 +1,11 @@
 # netease-cloud-music-appimage
-由网易云音乐deb包制作的appimage格式的网易云音乐
+[网易云音乐](http://music.163.com)的[appimag](https://github.com/AppImage/AppImageKit)包
+
+---
+
+## Download
+
+## Build
+```bash
+chmod u+x build.sh
+```

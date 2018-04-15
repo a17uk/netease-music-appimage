@@ -1,0 +1,11 @@
+app: netease-cloud-music
+binpatch: true
+
+ingredients:
+  dist: deepin15
+  sources: 
+    - deb http://mirrors.aliyun.com/deepin unstable main contrib non-free
+
+script: 
+  - cp ./usr/share/icons/hicolor/scalable/apps/netease-cloud-music.svg .
+  - cp /usr/lib/x86_64-linux-gnu/libpango* lib/x86_64-linux-gnu/

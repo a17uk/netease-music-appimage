@@ -1,6 +1,6 @@
 #!/bin/sh
 source /etc/os-release
-if [ $ID_LIKE == "debian" ]
+if [[ $ID_LIKE == "debian" || $ID == "debian" ]]
 then
     set -x
     sudo apt install --no-install-recommends -y\

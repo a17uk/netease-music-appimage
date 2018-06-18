@@ -16,5 +16,5 @@ chmod u+x NetEase_Cloud_Music-x86_64.AppImage
 ```bash
 git clone https://gitee.com/kelleg/netease-cloud-music-appimage.git
 cd netease-cloud-music-appimage
-chmod u+x build.sh && ./build.sh
+bash pkg2appimage-with-docker
 ```

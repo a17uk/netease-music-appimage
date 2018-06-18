@@ -124,6 +124,7 @@ fi
 # Source a user-provided functions.sh if the environment
 # variable FUNCTIONS_SH was set and the file exists
 if [ -z "$FUNCTIONS_SH" ] ; then
+  cp ../functions.sh .
   if [ ! -e functions.sh ] ; then
     wget -q https://github.com/AppImage/AppImages/raw/${PKG2AICOMMIT}/functions.sh -O ./functions.sh
   fi

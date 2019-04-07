@@ -4,7 +4,7 @@
 ---
 
 ## Download
-[NetEase_Cloud_Music](https://share.weiyun.com/5wUKscm)
+[NetEase_Cloud_Music](https://share.weiyun.com/5KFUeAm)
 ### use
 ```bash
 chmod u+x NetEase_Cloud_Music-x86_64.AppImage

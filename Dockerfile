@@ -1,7 +1,7 @@
 # Beware: only meant for use with pkg2appimage-with-docker
 # Beware: only use for build netease-music-appimage
 
-FROM ubuntu:16.04
+FROM ubuntu:18.10
 
 MAINTAINER "kelleg <utengfei@foxmail.com>"
 

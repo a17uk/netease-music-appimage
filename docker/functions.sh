@@ -115,7 +115,7 @@ move_lib()
 # Delete blacklisted files
 delete_blacklisted()
 {
-  BLACKLISTED_FILES=$(cat_file_from_url https://github.com/AppImage/AppImages/raw/${PKG2AICOMMIT}/excludelist | sed 's|#.*||g')
+  BLACKLISTED_FILES=$(cat_file_from_url https://github.com/AppImage/pkg2appimage/raw/${PKG2AICOMMIT}/excludelist | sed 's|#.*||g')
   echo $BLACKLISTED_FILES
   for FILE in $BLACKLISTED_FILES ; do
     FILES="$(find . -name "${FILE}" -not -path "./usr/optional/*")"
@@ -141,11 +141,11 @@ glibc_needed()
 # Usage: get_desktopintegration name_of_desktop_file_and_exectuable
 get_desktopintegration()
 {
-  REALBIN=$(grep -o "^Exec=.*" *.desktop | sed -e 's|Exec=||g' | cut -d " " -f 1 | head -n 1)
-  cat_file_from_url https://raw.githubusercontent.com/AppImage/AppImageKit/master/desktopintegration > ./usr/bin/$REALBIN.wrapper
-  chmod a+x ./usr/bin/$REALBIN.wrapper
-
-  sed -i -e "s|^Exec=$REALBIN|Exec=$REALBIN.wrapper|g" $1.desktop
+  # REALBIN=$(grep -o "^Exec=.*" *.desktop | sed -e 's|Exec=||g' | cut -d " " -f 1 | head -n 1)
+  # cat_file_from_url https://raw.githubusercontent.com/AppImage/AppImageKit/deprecated/AppImageAssistant/desktopintegration > ./usr/bin/$REALBIN.wrapper
+  # chmod a+x ./usr/bin/$REALBIN.wrapper
+  echo "The desktopintegration script is deprecated. Please advise users to use https://github.com/AppImage/appimaged instead."
+  # sed -i -e "s|^Exec=$REALBIN|Exec=$REALBIN.wrapper|g" $1.desktop
 }
 
 # Generate AppImage; this expects $ARCH, $APP and $VERSION to be set
@@ -203,15 +203,19 @@ generate_type2_appimage()
   # if [ -z "$URL" ] ; then
   #   URL=$(wget -q "https://s3.amazonaws.com/archive.travis-ci.org/jobs/$((ID+2))/log.txt" -O - | grep "https://transfer.sh/.*/appimagetool" | tail -n 1 | sed -e 's|\r||g')
   # fi
-  URL="https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-${SYSTEM_ARCH}.AppImage"
-  wget -c "$URL" -O appimagetool
-  chmod a+x ./appimagetool
-  appimagetool=$(readlink -f appimagetool)
-
+  if [ -z "$(which appimagetool)" ] ; then
+    URL="https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-${SYSTEM_ARCH}.AppImage"
+    wget -c "$URL" -O appimagetool
+    chmod a+x ./appimagetool
+    appimagetool=$(readlink -f appimagetool)
+  else
+    appimagetool=$(which appimagetool)
+  fi
   if [ "$DOCKER_BUILD" ]; then
     appimagetool_tempdir=$(mktemp -d)
     mv appimagetool "$appimagetool_tempdir"
     pushd "$appimagetool_tempdir" &>/dev/null
+    ls -al
     ./appimagetool --appimage-extract
     rm appimagetool
     appimagetool=$(readlink -f squashfs-root/AppRun)
@@ -252,7 +256,12 @@ generate_status()
   mkdir -p ./tmp/archives/
   mkdir -p ./tmp/lists/partial
   touch tmp/pkgcache.bin tmp/srcpkgcache.bin
-  wget -c "https://github.com/AppImage/AppImages/raw/${PKG2AICOMMIT}/excludedeblist"
+  if [ -e "${HERE}/usr/share/pkg2appimage/excludedeblist" ]  ; then
+    EXCLUDEDEBLIST="${HERE}/usr/share/pkg2appimage/excludedeblist"
+  else
+    wget -q -c "https://github.com/AppImage/AppImages/raw/${PKG2AICOMMIT}/excludedeblist"
+    EXCLUDEDEBLIST=excludedeblist
+  fi
   rm status 2>/dev/null || true
   for PACKAGE in $(cat excludedeblist | cut -d "#" -f 1) ; do
     printf "Package: $PACKAGE\nStatus: install ok installed\nArchitecture: all\nVersion: 9:999.999.999\n\n" >> status
